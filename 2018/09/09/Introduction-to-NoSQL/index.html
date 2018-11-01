@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="NoSQL 简介">
+<meta name="keywords" content="NoSQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NoSQL简介">
+<meta property="og:url" content="https://shaotao1988.github.io/2018/09/09/Introduction-to-NoSQL/index.html">
+<meta property="og:site_name" content="Tao&#39;s Blog">
+<meta property="og:description" content="NoSQL 简介">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-01T05:01:33.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NoSQL简介">
+<meta name="twitter:description" content="NoSQL 简介">
+
+
+
+
+
+
+  <link rel="canonical" href="https://shaotao1988.github.io/2018/09/09/Introduction-to-NoSQL/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>NoSQL简介 | Tao's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Introduction-to-NoSQL/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Tao">
+      <meta itemprop="description" content="Programming and Technical Sharing">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NoSQL简介
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-01 00:01:33" itemprop="dateModified" datetime="2018-11-01T00:01:33-05:00">2018-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>NoSQL 简介</p>
+<a id="more"></a>
+<h2 id="数据库的历史"><a href="#数据库的历史" class="headerlink" title="数据库的历史"></a>数据库的历史</h2><ol>
+<li>关系型数据库</li>
+</ol>
+<p>起源于80年代中期</p>
+<p>优点：</p>
+<ul>
+<li>数据持久</li>
+<li>SQL</li>
+<li>事务</li>
+<li>Integration，集成</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>Impedance mismatch: 用户界面的数据往往分散在不同的数据表中，需要在多个数据表中进行联合查询，再在内存中组装成所需要的格式</li>
+<li>ORM层: Object Relational Mapping</li>
+</ul>
+<ol start="2">
+<li>对象数据库</li>
+</ol>
+<p>90年代中期</p>
+<p>将内存中的对象直接存储到数据库中，无需ORM</p>
+<p>关系型数据库已被大量用于各种系统的集成中，其它类型数据库很难有一席之地</p>
+<ol start="3">
+<li>NoSQL</li>
+</ol>
+<p>21世纪初：互联网、大数据爆发</p>
+<ul>
+<li>Scaling：Large clusters with little boxes.数据被分片、分散存储到多个物理机器上</li>
+<li>SQL: Single system with big box. SQL不能很好地适应数据库集群</li>
+</ul>
+<p>Google、Amazon分别开发了自己的数据存储系统Bigtable和Dynamo，并在刊物上分享他们的Idea，从而引发了NoSQL运动。</p>
+<p>在伦敦的Johan Oskarsson准备在旧金山组织一次会议，就新出现的数据库ideas进行讨论。当时召集与会人最快捷的方式就是在Twitter上创建一个hashtag，这个tag需要简短、唯一，于是有人提出用nosql。</p>
+<h2 id="NoSQL"><a href="#NoSQL" class="headerlink" title="NoSQL"></a>NoSQL</h2><p><strong>特点</strong></p>
+<ul>
+<li>Non-relational</li>
+<li>Open-source</li>
+<li>Cluster-friendly</li>
+<li>Schema-less</li>
+<li>21st Century Web</li>
+</ul>
+<p><strong>分类</strong></p>
+<ul>
+<li>Document: MongoDB, Raven DB, CouchDB</li>
+<li>Column-family: Cassandra, HBASE</li>
+<li>Graph: Neo4j</li>
+<li>Key-Value: Redis, riak</li>
+</ul>
+<p><strong>Data Models</strong></p>
+<pre><code>Common feature: No schema. 可以以复杂的数据结构为单元进行存储(**Aggregate oriented**)
+</code></pre><ul>
+<li>Key Value<br>Hashmap结构，数据库对Value的值一无所知，也不能基于Value进行任何操作（查找、排序等）</li>
+<li>Document<br>存储的是复杂的数据结构，一般被封装为JSON格式，可以部分地查询或更新文档数据结构. eg:<br>{<pre><code>&quot;id&quot;: 1001,
+&quot;customer_id&quot;: 1234,
+&quot;line-items&quot;:[
+    {&quot;product_id&quot;: 4555, &quot;quantity&quot;: 8},
+    {&quot;product_id&quot;: 7845, &quot;quantity&quot;: 12},
+    {&quot;product_id&quot;: 8432, &quot;quantity&quot;: 40}
+]
+</code></pre>}</li>
+<li>Column-family<br>一个条目row key可以存储多个column-family，每个column-family又是多个column key和column value的组合. eg：<br>1234(row key)<br>  profile(Column-family 1)<pre><code>name: Martin(column key-values)
+biliingAddress: data...
+payment: data...
+</code></pre>  orders(Column-family 2)<pre><code>OR1001: data...
+OR1002: data...
+</code></pre></li>
+<li>Graph<br>很方便的做节点之间的关联分析，不是Aggregate oriented。</li>
+</ul>
+<blockquote>
+<p>NoSQL的优势：数据分片后，关系型数据库需要到每个分片中做数据查询，再通过应用程序Aggregate后返回给客户端，而NoSQL只需要到对应的数据分片上查询一次就可以了</p>
+</blockquote>
+<blockquote>
+<p>NoSQL的劣势：如果需要对上面的line-item数据做以Product_id为维度的聚合分析会非常复杂，通常需要以类似Map-Reduce的方式来处理，而关系型数据库则可以很方便的处理这样的分析</p>
+</blockquote>
+<p><strong>NoSQL数据库的一致性</strong></p>
+<p>事务可以保证数据库数据的一致性。相对于关系型数据库，NoSQL数据库对事务的依赖程度没那么高，因为数据已经被聚合在一起了，可以对数据加版本号来防止并发操作时的数据一致性问题（乐观锁）。</p>
+<p>逻辑一致性：ACID中的C. 数据可以在一台机器上，也可以通过sharding分布在多台机器上。</p>
+<p>复制一致性：数据库读写分离时，Master和Slave之间数据的一致性。</p>
+<blockquote>
+<p>CAP理论: Consistency, Availability, Partition Tolerance只能二者选其一</p>
+</blockquote>
+<p>这里的availability指的是提供服务的能力，不是通常意义上服务器宕机导致的资源不可用</p>
+<p>举例：在Expedia上预订房间，Expedia在世界不同地方建立了数据中心（对网络、数据等Partition），假设区域A和区域B之间的网络完全中断，这时Amazon有2种选择：</p>
+<ul>
+<li>选择可用性但是放弃一致性：继续为用户提供预订服务，但是可能存在区域A、B的2个不同的用户预订了同一个房间的情况</li>
+<li>选择一致性但是放弃可用性：提示用户服务不可用</li>
+</ul>
+<p><strong>为什么用NoSQL</strong></p>
+<ol>
+<li>快速开发<br>没有Impedance mismatch问题，数据库模型跟对象模型完全一致，不用维护关系数据库中各种表之间复杂的关系，缩短产品上线时间。</li>
+<li>大数据分析<br>NoSQL天生具有很好的Scaling特性，可以配合Map-Reduce进行超大规模数据的存储和分析。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NoSQL/" rel="tag"># NoSQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/09/查询性能优化/" rel="next" title="数据库查询性能优化">
+                <i class="fa fa-chevron-left"></i> 数据库查询性能优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/09/python-logging-module/" rel="prev" title="python日志模块">
+                python日志模块 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Shao Tao">
+            
+              <p class="site-author-name" itemprop="name">Shao Tao</p>
+              <p class="site-description motion-element" itemprop="description">Programming and Technical Sharing</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库的历史"><span class="nav-number">1.</span> <span class="nav-text">数据库的历史</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NoSQL"><span class="nav-number">2.</span> <span class="nav-text">NoSQL</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Tao</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

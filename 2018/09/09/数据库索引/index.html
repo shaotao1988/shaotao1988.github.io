@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="减少服务器需要扫描的数据量 避免排序和临时表 将随机I/O变为顺序I/O   三星索引索引将相关的记录放到一起获得一星索引中的数据顺序和查找中的排列顺序一致获得二星索引中的列包含了查找中的全部列获得三星">
+<meta name="keywords" content="数据库,索引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库索引">
+<meta property="og:url" content="https://shaotao1988.github.io/2018/09/09/数据库索引/index.html">
+<meta property="og:site_name" content="Tao&#39;s Blog">
+<meta property="og:description" content="减少服务器需要扫描的数据量 避免排序和临时表 将随机I/O变为顺序I/O   三星索引索引将相关的记录放到一起获得一星索引中的数据顺序和查找中的排列顺序一致获得二星索引中的列包含了查找中的全部列获得三星">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-01T05:02:38.510Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据库索引">
+<meta name="twitter:description" content="减少服务器需要扫描的数据量 避免排序和临时表 将随机I/O变为顺序I/O   三星索引索引将相关的记录放到一起获得一星索引中的数据顺序和查找中的排列顺序一致获得二星索引中的列包含了查找中的全部列获得三星">
+
+
+
+
+
+
+  <link rel="canonical" href="https://shaotao1988.github.io/2018/09/09/数据库索引/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据库索引 | Tao's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/数据库索引/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Tao">
+      <meta itemprop="description" content="Programming and Technical Sharing">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据库索引
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-01 00:02:38" itemprop="dateModified" datetime="2018-11-01T00:02:38-05:00">2018-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li>减少服务器需要扫描的数据量</li>
+<li>避免排序和临时表</li>
+<li>将随机I/O变为顺序I/O</li>
+</ul>
+<blockquote>
+<p><strong>三星索引</strong><br>索引将相关的记录放到一起获得一星<br>索引中的数据顺序和查找中的排列顺序一致获得二星<br>索引中的列包含了查找中的全部列获得三星  </p>
+</blockquote>
+<a id="more"></a>
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
+<li>B-Tree索引：全键值、键值范围或键前缀查找，支持Order by排序</li>
+<li>哈希索引：精确匹配，只支持等值匹配，不支持部分匹配和排序</li>
+<li>空间数据索引</li>
+<li>全文索引</li>
+</ul>
+<h2 id="索引和锁"><a href="#索引和锁" class="headerlink" title="索引和锁"></a>索引和锁</h2><p>InnoDB只有在访问行的时候才会对其加锁，而索引能够减少InnoDB访问的行数，从而减少锁的数量。</p>
+<h2 id="索引策略"><a href="#索引策略" class="headerlink" title="索引策略"></a>索引策略</h2><ol>
+<li><p>使用独立的列作为查询条件，查询条件不能是表达式的一部分，也不能是函数参数</p>
+</li>
+<li><p>前缀索引和索引选择性。只索引开始的部分字符可以节省索引空间，但会降低索引的选择性（不重复的索引值和总记录的比值）。前缀索引不能用作order by和group by。</p>
+</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> city <span class="keyword">ADD</span> <span class="keyword">KEY</span> (city(<span class="number">7</span>));</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>多列索引。单独的多列索引有时候不能提高查询性能。</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 下面的查询不会使用索引</span><br><span class="line"><span class="keyword">select</span> film_id, actor_id <span class="keyword">from</span> film_actor <span class="keyword">where</span> film_id = <span class="number">1</span> <span class="keyword">or</span> actor_id = <span class="number">1</span>;</span><br><span class="line"># 应当变为下面的句式</span><br><span class="line"><span class="keyword">select</span> film_id, actor_id <span class="keyword">from</span> film_actor <span class="keyword">where</span> film_id = <span class="number">1</span></span><br><span class="line"><span class="keyword">union</span> all</span><br><span class="line"><span class="keyword">select</span> film_id, actor_id <span class="keyword">from</span> film_actor <span class="keyword">where</span> actor_id = <span class="number">1</span> <span class="keyword">and</span> film_id &lt;&gt; <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>选择合适的索引列顺序：将索引选择性最高的列放在最前面</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select count(distinct last_name)/count(*) as last_name_selectivity, count(distinct first_name)/count(*) as first_name_selectivity, count(*) from employees;</span><br><span class="line">+<span class="comment">-----------------------+------------------------+----------+</span></span><br><span class="line">| last_name_selectivity | first_name_selectivity | count(*) |</span><br><span class="line">+<span class="comment">-----------------------+------------------------+----------+</span></span><br><span class="line">|                0.0055 |                 0.0042 |   300024 |</span><br><span class="line">+<span class="comment">-----------------------+------------------------+----------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.57</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">alter</span> <span class="keyword">table</span> employees <span class="keyword">add</span> <span class="keyword">key</span>(last_name, first_name);</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li><p>聚簇索引：将数据行存储在索引中，适合排序  </p>
+<p>InnDB使用主键进行聚簇，既是索引，又是保存数据库到磁盘的物理格式</p>
+<ul>
+<li>可以把相同索引的数据保存在一起，提高I/O密集型应用的性能。例如根据用户ID来聚集数据，这样只需从磁盘中读取少数数据页就可以获取该用户的所有数据。</li>
+<li>数据访问更快</li>
+<li>使用覆盖索引扫描的查询可以直接使用叶节点中的主键值</li>
+</ul>
+<p>主键最好是顺序的，最好避免随机且分布范围很大的值做主键（比如uuid），因为这样会是的数据没有任何聚集特性。</p>
+<p>当按主键顺序插入时，聚簇索引将每一条记录都存储在上一条记录的后面，当达到页的最大填充因子时（需要留出空间用于以后修改），下一条记录就会写到新的页中。当数据按照这种方式加载时，整个数据库就会近似于被顺序的记录填满。</p>
+<p>使用uuid聚簇索引的表插入数据，由于新数据行的主键值不一定比上一条大，所以不能简单地把新行插入到索引的最后，而是根据主键查找到正确的插入位置，而这个位置通常位于不同的磁盘页上，导致大量额外的磁盘I/O时间。</p>
+<p>缺点：</p>
+<ul>
+<li>更新索引列的代价很高，需要将数据行从磁盘拷贝到新的位置</li>
+<li>插入速度依赖插入顺序，如果聚簇的键不是自增的，写入的目标磁盘页可能需要重新加载，导致每条数据插入都需要大量磁盘I/O</li>
+<li>由于写入是乱序的，所以不得不频繁做分页操作，以便为新行分配空间。页分裂会导致移动大量数据，导致修改多个页，而不是一个页，页会变得稀疏，且存在数据碎片</li>
+<li>二级索引访问需要2次索引查找。二级索引保存的行指针实际上是行的主键值，所以第一次查找到索引对应的主键，第二次根据主键查找数据行。保存主键值而不是真正的行指针，是因为出现行移动或数据分页时就不需要对二级索引进行更新了。</li>
+</ul>
+</li>
+</ol>
+<p>MyISAM的数据分布：按数据插入的顺序存储在磁盘上，索引中保存了对应行的存储位置信息。一次索引查找就可以得到数据的物理位置。</p>
+<p>InnoDB的数据分布：数据存储在聚簇索引的叶节点中，如果主键比较稀疏且不按顺序存储，会导致页变得稀疏且存在碎片。二级索引需要2次查找才能得到数据的位置。</p>
+<blockquote>
+<p>顺序的主键也可能造成不好的结果：对于高并发场景，主键的上界会成为热点，因为所有的插入都发生在这里，所以并发插入会导致间隙锁竞争</p>
+</blockquote>
+<ol start="6">
+<li>覆盖索引</li>
+</ol>
+<blockquote>
+<p>索引的叶子节点已经包含了要查询的数据，就没必要再回表查询了。而如果一个索引包含（或者说覆盖）了所有需要查询的字段的值，就称之为覆盖索引。</p>
+</blockquote>
+<ul>
+<li>索引数据远小于数据行大小，更容易全部放入内存</li>
+<li>索引按照列值顺序存储，所以简单的范围查询可以使用顺序的索引访问代替随机访问</li>
+<li>InnoDB的二级索引在叶子节点保存了主键值，所以如果二级索引主键能够覆盖查询，可以避免对主键的二级查询</li>
+</ul>
+<p>覆盖索引的键存储的必须是要查找的值，所以哈希索引、空间索引、全文索引都不能用作覆盖索引。</p>
+<ol start="7">
+<li>使用索引扫描排序</li>
+</ol>
+<p>扫描索引本身是很快的，但是如果索引不能覆盖查询所需的全部列，就不得不每扫描一条索引就回表查询一次对应的行，这基本上是随机I/O，因此按索引顺序读取数据的速度通常比顺序地全表扫描要慢。</p>
+<p><strong>MySQL可以使用同一个索引既用于查找，又满足排序。因此设计索引时要尽可能同时满足这2种任务。</strong></p>
+<p>但是需要满足条件：索引的列顺序和order by子句的列顺序完全一致，并且满足索引的最左前缀要求。如果查询需要关联多张表，则order by子句的字段需要全部来自第一张表。只有一种情况下order by子句可以不满足索引的最左前缀要求，就是where或join子句的前导列为常量、比较条件为等于，且跟order by子句组合起来满足最左前缀要求。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> rental_id, staff_id <span class="keyword">from</span> rental</span><br><span class="line"><span class="keyword">where</span> rental_date = <span class="string">'2005-05-05'</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> inventory_id, customer_id;</span><br></pre></td></tr></table></figure>
+<p>如果索引为(rental_date, inventory_id, customer_id), 那么就可以使用索引扫描排序</p>
+<h2 id="索引设计中应该考虑的问题"><a href="#索引设计中应该考虑的问题" class="headerlink" title="索引设计中应该考虑的问题"></a>索引设计中应该考虑的问题</h2><ul>
+<li>将最常用的、选择性最高的搜索条件放在索引的最前面</li>
+<li>尽可能减少索引数量，如果有些列的值域比较少，可以考虑加加到索引中并用IN条件”填坑”，以满足最左前缀要求</li>
+<li>查询语句中将范围条件放到最后，并且尽量避免多个范围条件</li>
+<li>延迟关联：在JOIN子句中使用覆盖索引查询到需要的主键，再根据这些主键回表查找所需的数据行</li>
+</ul>
+<h2 id="索引维护"><a href="#索引维护" class="headerlink" title="索引维护"></a>索引维护</h2><h3 id="行碎片"><a href="#行碎片" class="headerlink" title="行碎片"></a>行碎片</h3><p>一个数据行被存储为多个地方的多个片段中：使用聚簇索引但是不按主键顺序插入时，节点分裂会导致行碎片</p>
+<h3 id="行间碎片"><a href="#行间碎片" class="headerlink" title="行间碎片"></a>行间碎片</h3><p>行在磁盘上不是顺序存储的，也是针对聚簇索引。对范围查询影响较大，因为聚簇索引本来能够将主键连续的行保存在相邻的页中。</p>
+<h3 id="剩余空间碎片"><a href="#剩余空间碎片" class="headerlink" title="剩余空间碎片"></a>剩余空间碎片</h3><p>页中有大量剩余空间，导致读取大量不需要的数据，造成内存浪费，一般也是聚簇索引页分裂导致。</p>
+<p>可以使用optimiza table来重新整理数据</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+            <a href="/tags/索引/" rel="tag"># 索引</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/09/cookies/" rel="next" title="cookie introduction">
+                <i class="fa fa-chevron-left"></i> cookie introduction
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/09/Dogpile-effect/" rel="prev" title="dogpile effect">
+                dogpile effect <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Shao Tao">
+            
+              <p class="site-author-name" itemprop="name">Shao Tao</p>
+              <p class="site-description motion-element" itemprop="description">Programming and Technical Sharing</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#索引类型"><span class="nav-number">1.</span> <span class="nav-text">索引类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引和锁"><span class="nav-number">2.</span> <span class="nav-text">索引和锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引策略"><span class="nav-number">3.</span> <span class="nav-text">索引策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引设计中应该考虑的问题"><span class="nav-number">4.</span> <span class="nav-text">索引设计中应该考虑的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引维护"><span class="nav-number">5.</span> <span class="nav-text">索引维护</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行碎片"><span class="nav-number">5.1.</span> <span class="nav-text">行碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#行间碎片"><span class="nav-number">5.2.</span> <span class="nav-text">行间碎片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#剩余空间碎片"><span class="nav-number">5.3.</span> <span class="nav-text">剩余空间碎片</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Tao</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

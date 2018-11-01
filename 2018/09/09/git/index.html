@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Git命令行学习">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git command">
+<meta property="og:url" content="https://shaotao1988.github.io/2018/09/09/git/index.html">
+<meta property="og:site_name" content="Tao&#39;s Blog">
+<meta property="og:description" content="Git命令行学习">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-01T05:01:27.809Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git command">
+<meta name="twitter:description" content="Git命令行学习">
+
+
+
+
+
+
+  <link rel="canonical" href="https://shaotao1988.github.io/2018/09/09/git/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>git command | Tao's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/git/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Tao">
+      <meta itemprop="description" content="Programming and Technical Sharing">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">git command
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-01 00:01:27" itemprop="dateModified" datetime="2018-11-01T00:01:27-05:00">2018-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Git命令行学习  </p>
+<a id="more"></a>
+<ol>
+<li>新建代码库</li>
+</ol>
+<ul>
+<li>初始化本地仓库  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>命令会在当前目录初始化仓库，建立.git文件夹存储git数据  </p>
+<ul>
+<li>添加远程仓库<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin location-to-your-git-repository</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>可以添加多个远程仓库，origin为远程仓库的名字</p>
+<ul>
+<li>克隆远程仓库<br>在本地新建git项目跟踪远程仓库<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone location-to-your-git-repository</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="2">
+<li>配置  </li>
+</ol>
+<ul>
+<li><p>显示当前配置信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --list</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑git配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config -e [--global]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置提交代码时的用户信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &apos;user-name&apos;</span><br><span class="line">git config --global user.email &apos;user-email&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="3">
+<li>更新文件到仓库</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">git add [file1] [file2] # 将变动添加到暂存区</span><br><span class="line">git add [dir] # 将该目录下的变动添加到暂存区</span><br><span class="line">git rm [file1] [file2]</span><br><span class="line">git rm --cached [file] # 停止追踪文件，但该文件会保留在工作区</span><br><span class="line">git mv file-from file-to # 移动文件</span><br><span class="line">git status # 查看文件变动情况</span><br><span class="line">vim .gitignore # 不希望跟踪的文件、目录</span><br><span class="line">git diff # 比较当前文件和暂存区快照之间的差异</span><br><span class="line">git diff --cached/--staged # 显示暂存区快照中的改动</span><br><span class="line">git commit -m &apos;message-of-this-commit&apos; # 提交暂存区代码到本地仓库</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>查看提交历史  </li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log</span><br></pre></td></tr></table></figure>
+<ul>
+<li>-p选项显示每次提交的内容差异  </li>
+<li>-2显示最近的2次提交  </li>
+<li>–state显示每次提交的简略统计信息  </li>
+<li>–pretty=oneline 每个提交放在一行显示</li>
+</ul>
+<ol start="5">
+<li>撤销操作</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit --amend</span><br></pre></td></tr></table></figure>
+<p>提交完发现有几个文件还没有提交，或提交信息写错了，可以用该命令尝试重新提交<br>该命令会将暂存区的文件提交<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git reset # 撤销暂存区中全部文件</span><br><span class="line">git reset HEAD [file1] # 撤销暂存区中的指定文件</span><br></pre></td></tr></table></figure></p>
+<p>将文件从暂存区中撤销</p>
+<ol start="6">
+<li>远程仓库操作</li>
+</ol>
+<ul>
+<li><p>查看远程仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote -v</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从远程仓库抓取与拉取</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>origin为远程仓库的名字，可以通过git remote -v命令查看<br>该命令只会讲远程仓库的数据拉取到本地仓库，但不会改动当前工作区的文件  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull</span><br></pre></td></tr></table></figure>
+<p>该命令从远程仓库抓取数据并将改动合并到当前分支</p>
+<ul>
+<li>推送到远程仓库<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin local-branch:remote-branch</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>将本地仓库的local-branch分支的commit，推送到名字为origin的远程仓库中的remote-branch分支，如果分支名相同的话可以只写一个分支名<br><strong>只有当你有origin远程仓库的写入权限，且之前没有其它人推送过时，该命令才会生效</strong>  ，所以在push之前一定要先fetch，然后merge其它人的修改  </p>
+<ul>
+<li>远程仓库移除与重命名<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote rename origin new-name</span><br><span class="line">git remote rm origin</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="7">
+<li>打标签  </li>
+</ol>
+<p>给历史中某次提交打上标签，以示重要  </p>
+<ul>
+<li><p>列出标签</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以特定模式查找标签</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag -l &apos;v1.8.5*&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>显示所有以v1.8.5开头的标签  </p>
+<ul>
+<li><p>打轻量标签<br>轻量标签是对一次提交的引用<br>附注标签是git数据库中一个完整的对象，包括打标签者的名字、电邮地址、日期、标签message</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag [tag-name]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打附注标签</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag -a [tag-name] -m &quot;tag-message&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>给历史提交打标签<br>要给某个提交打标签，只需要在tag命令的末尾指定该次提交的校验和</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git log --pretty=oneline # 查找到要打标签的校验和，比如9fceb02</span><br><span class="line">git tag -a v1.2 9fceb02</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>向远程仓库推送标签<br>git push命令默认不会推送tag到远程仓库，需要显式推送tag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git push origin [tag-name] # 推送某个tag</span><br><span class="line">git push origin --tags # 推送本地所有tag</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>检出标签<br>需要创建新分支，将新分支移动到标签处</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b [new-branch-name] [tag-name]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>标签删除<br>删除本地标签</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag -d [tag-name]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果要删除远程标签，需要先删除本地标签，然后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin :refs/tags/[tag-name]</span><br></pre></td></tr></table></figure></p>
+<ol start="8">
+<li>分支</li>
+</ol>
+<ul>
+<li>创建分支<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch [branch-name]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>git有一个名为HEAD的特殊指针，指向当前的本地分支</p>
+<ul>
+<li><p>分支切换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout [branch-name]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分支合并<br>将一个分支的修改合并到当前分支</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git merge [hotfix]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分支删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -d [hotfix]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>冲突处理<br>分支合并时，如果2个分支修改了同一个文件，可能会造成冲突<br>用git status可以查看因包含冲突而未合并的文件<br>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD:index.html</span><br><span class="line">&lt;div id=&quot;footer&quot;&gt;contact : email.support@github.com&lt;/div&gt;</span><br><span class="line">=======</span><br><span class="line">&lt;div id=&quot;footer&quot;&gt;</span><br><span class="line"> please contact us at support@github.com</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; iss53:index.html</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>=====号分隔了有冲突的部分，需要手动修改这部分代码以解决冲突<br>修改完后用git add来暂存这个有冲突的文件，git就会将它们标记为已解决<br>用git status再次检查是否还有未解决的冲突，没有冲突后使用git commit提交  </p>
+<ul>
+<li>跟踪分支<br>当clone一个远程仓库时，git会自动创建一个跟踪origin/master的master分支，我们也可以设置跟踪其它分支<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout --track origin/feature</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这条命令会自动在本地创建一个名为feature的分支，并跟踪远程仓库的feature分支<br>如果想为本地分支指定不同的名字，可以使用-b选项:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b my-branch origin/feature</span><br></pre></td></tr></table></figure></p>
+<p>当然，我们也可以随意设置本地分支跟踪的远程分支，使用-u或–set-upstream-to选项运行git branch:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -u origin/feature</span><br><span class="line">git branch --set-upstream-to origin/feature</span><br></pre></td></tr></table></figure></p>
+<ol start="9">
+<li>错误处理<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SSL Certificate problem: unable to get local issuer</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>禁用证书验证：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.sslVerify false</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/git/" rel="tag"># git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/09/regex/" rel="next" title="正则表达式常用符号">
+                <i class="fa fa-chevron-left"></i> 正则表达式常用符号
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/09/cookies/" rel="prev" title="cookie introduction">
+                cookie introduction <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Shao Tao">
+            
+              <p class="site-author-name" itemprop="name">Shao Tao</p>
+              <p class="site-description motion-element" itemprop="description">Programming and Technical Sharing</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Tao</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

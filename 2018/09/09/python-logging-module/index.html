@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="python日志模块介绍">
+<meta name="keywords" content="python,logging">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python日志模块">
+<meta property="og:url" content="https://shaotao1988.github.io/2018/09/09/python-logging-module/index.html">
+<meta property="og:site_name" content="Tao&#39;s Blog">
+<meta property="og:description" content="python日志模块介绍">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-01T05:00:59.443Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python日志模块">
+<meta name="twitter:description" content="python日志模块介绍">
+
+
+
+
+
+
+  <link rel="canonical" href="https://shaotao1988.github.io/2018/09/09/python-logging-module/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>python日志模块 | Tao's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/python-logging-module/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Tao">
+      <meta itemprop="description" content="Programming and Technical Sharing">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">python日志模块
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-01 00:00:59" itemprop="dateModified" datetime="2018-11-01T00:00:59-05:00">2018-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">python日志模块介绍</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>软件开发中通过日志记录程序的运行情况是一个开发的好习惯，对于错误排查和系统运维都有很大帮助。Python标准库自带日志模块，已经足够强大，大部分情况下，python程序的日志功能直接调用标准库的日志模块即可。本文对python的日志模块做了简单整理，使读者能在短时间迅速掌握日志模块的使用。</p>
+<a id="more"></a>
+<h2 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h2><p>可以通过API设置允许的最低日志级别，只有该级别或以上的日志才会被处理，默认级别为WARNING。日志级别由低到高依次为：</p>
+<ul>
+<li><p>logging.DEBUG</p>
+</li>
+<li><p>logging.INFO</p>
+</li>
+<li><p>logging.WARNING</p>
+</li>
+<li><p>logging.ERROR</p>
+</li>
+<li><p>logging.CRITICAL</p>
+</li>
+</ul>
+<h2 id="基本参数设置"><a href="#基本参数设置" class="headerlink" title="基本参数设置"></a>基本参数设置</h2><p>通过basicConfig方法初始化日志模块的基本参数，比如日志保存路径，日志级别，日志格式等， 必须在调用日志接口(debug, info, warning等)前初始化，否则是空操作。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Initialize_log</span><span class="params">(filename:<span class="string">'all.log'</span>, level:<span class="string">'DEBUG'</span>, format:<span class="string">'%(asctime)s - %(levelname)s - %(message)s'</span>)</span>:</span></span><br><span class="line">    <span class="comment"># 对level参数做校验，如果参数设置不正确，就使用DEBUG级别</span></span><br><span class="line">    level = getattr(logging, level.upper(), logging.DEBUG)</span><br><span class="line">    logging.basicConfig(filename = filename, level = level, format = format)</span><br></pre></td></tr></table></figure>
+<h3 id="日志格式"><a href="#日志格式" class="headerlink" title="日志格式"></a>日志格式</h3><p>格式选项如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">%(name)s            Name of the logger (logging channel)</span><br><span class="line">%(levelno)s         Numeric logging level <span class="keyword">for</span> the message (DEBUG, INFO,</span><br><span class="line">                    WARNING, ERROR, CRITICAL)</span><br><span class="line">%(levelname)s       Text logging level <span class="keyword">for</span> the message (<span class="string">"DEBUG"</span>, <span class="string">"INFO"</span>,</span><br><span class="line">                    <span class="string">"WARNING"</span>, <span class="string">"ERROR"</span>, <span class="string">"CRITICAL"</span>)</span><br><span class="line">%(pathname)s        Full pathname of the source file where the logging</span><br><span class="line">                    call was issued (<span class="keyword">if</span> available)</span><br><span class="line">%(filename)s        Filename portion of pathname</span><br><span class="line">%(module)s          Module (name portion of filename)</span><br><span class="line">%(lineno)d          Source line number where the logging call was issued</span><br><span class="line">                    (<span class="keyword">if</span> available)</span><br><span class="line">%(funcName)s        Function name</span><br><span class="line">%(created)f         Time when the LogRecord was created (time.time()</span><br><span class="line">                    <span class="keyword">return</span> value)</span><br><span class="line">%(asctime)s         Textual time when the LogRecord was created</span><br><span class="line">%(msecs)d           Millisecond portion of the creation time</span><br><span class="line">%(relativeCreated)d Time <span class="keyword">in</span> milliseconds when the LogRecord was created,</span><br><span class="line">                    relative to the time the logging module was loaded</span><br><span class="line">                    (typically at application startup time)</span><br><span class="line">%(thread)d          Thread ID (<span class="keyword">if</span> available)</span><br><span class="line">%(threadName)s      Thread name (<span class="keyword">if</span> available)</span><br><span class="line">%(process)d         Process ID (<span class="keyword">if</span> available)</span><br><span class="line">%(message)s         The result of record.getMessage(), computed just <span class="keyword">as</span></span><br><span class="line">                    the record <span class="keyword">is</span> emitted</span><br></pre></td></tr></table></figure></p>
+<p>如下的format字符串的格式：日志时间-级别-文件路径-行号-消息内容。注意如果format字符串是从配置文件中读取的话，需要使用2个%符号转义。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">format = <span class="string">"%(asctime)s - %(levelname)s - %(pathname)s - %(lineno)d - %(message)s"</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">2018-09-08 15:07:28,638 - INFO - /Users/victor/Documents/miniURL/util/logger.py - 32 - Adding stream handler to logger</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<h2 id="日志模块内部组成"><a href="#日志模块内部组成" class="headerlink" title="日志模块内部组成"></a>日志模块内部组成</h2><p>日志有如下几个部分组成：</p>
+<h3 id="Logger"><a href="#Logger" class="headerlink" title="Logger"></a>Logger</h3><p>  对外接口，应用程序直接调用这些接口进行参数配置、记录日志。使用logger = logging.getLogger(__name__)获取Logger对象。</p>
+<ul>
+<li><p>Logger.setLevel() 设置最低的日志级别</p>
+</li>
+<li><p>Logger.addHandler()和Logger.removeHandler() 添加和删除handler</p>
+</li>
+<li><p>Logger.addFilter()和Logger.removeFilter() 添加和删除filter</p>
+</li>
+<li><p>Logger.debug()/info()/warning()/error()/critical() 日志记录接口</p>
+</li>
+</ul>
+<h3 id="Handlers"><a href="#Handlers" class="headerlink" title="Handlers"></a>Handlers</h3><p>  将日志记录发送到目的地，可以将不同级别的日志发送到不同的文件、显示到终端、或者发送电子邮件。</p>
+<p>  最常用的2个handlers是logging.StreamHandler和logging.FileHandler:</p>
+<ul>
+<li><p>StreamHandler将日志发送到sys.stdout, sys.stderr或任何支持write()和flush()的file-like对象上</p>
+</li>
+<li><p>FileHandler将日志记录到磁盘文件上，它继承自StreamHandler</p>
+<p>Handler有3中方法，分别是setLevel()设置日志级别，setFormatter()设置日志格式，addFilter()和removeFilter()配置过滤器.</p>
+<p>Logger的setLevel用于设置日志模块处理的最低级别，而Handler的setLevel用于设置本handler处理的最低日志级别，所以一条日志可能被多个handler处理，被保存到多个不同的文件.</p>
+</li>
+</ul>
+<h3 id="Filters"><a href="#Filters" class="headerlink" title="Filters"></a>Filters</h3><p>  日志过滤，根据需要将特定的日志过滤.</p>
+<h3 id="Formatter"><a href="#Formatter" class="headerlink" title="Formatter"></a>Formatter</h3><p>  决定日志记录的格式.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">formatter = logging.Formatter(<span class="string">"%(asctime)s - %(levelname)s - %(pathname)s - %(lineno)d - %(message)s"</span>)</span><br><span class="line">handler.setFormatter(formatter)</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h2><p>配置日志模块，将日志保存到磁盘文件，记录所有日志.</p>
+<p>我们可以通过2种方法配置，第一种是logging.basicConfig，第二种是自己添加Handler和Formatter.</p>
+<h3 id="如果只有一种handler，可以直接通过logging-basicConfig配置"><a href="#如果只有一种handler，可以直接通过logging-basicConfig配置" class="headerlink" title="如果只有一种handler，可以直接通过logging.basicConfig配置"></a>如果只有一种handler，可以直接通过logging.basicConfig配置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果在basicConfig中传入了filename和format参数，会自动生成FileHander和Formatter并注册到Logger</span></span><br><span class="line">format = <span class="string">"%(asctime)s - %(levelname)s - %(pathname)s - %(lineno)d - %(message)s"</span></span><br><span class="line">logging.basicConfig(filename = <span class="string">"all.log"</span>, level = logging.DEBUG, format = format)</span><br><span class="line"></span><br><span class="line">logger = logging.getLogger(__name__)</span><br><span class="line">logger.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line">logger.debug(<span class="string">'debug info'</span>)</span><br><span class="line">logger.error(<span class="string">'error info'</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="如果需要多种handler，可以通过addHandler逐个添加"><a href="#如果需要多种handler，可以通过addHandler逐个添加" class="headerlink" title="如果需要多种handler，可以通过addHandler逐个添加"></a>如果需要多种handler，可以通过addHandler逐个添加</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">logger = logging.getLogger(__name__)</span><br><span class="line">logger.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line">f_handler = logging.FileHandler(<span class="string">'all.log'</span>)</span><br><span class="line">f_handler.setLevel(logging.DEBUG)</span><br><span class="line">f_formatter = logging.Formatter(<span class="string">"%(asctime)s - %(levelname)s - %(pathname)s - %(lineno)d - %(message)s"</span>)</span><br><span class="line">f_handler.setFormatter(f_formatter)</span><br><span class="line"></span><br><span class="line">logger.addHandler(f_handler)</span><br><span class="line"></span><br><span class="line">logger.debug(<span class="string">'debug info'</span>)</span><br><span class="line">logger.error(<span class="string">'error info'</span>)</span><br></pre></td></tr></table></figure>
+<p>2种配置输出的日志信息除了行号外都是一样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2018-09-09 00:18:32,351 - DEBUG - logger.py - 13 - debug info  </span><br><span class="line">2018-09-09 00:18:32,351 - ERROR - logger.py - 14 - error info</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/logging/" rel="tag"># logging</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/09/Introduction-to-NoSQL/" rel="next" title="NoSQL简介">
+                <i class="fa fa-chevron-left"></i> NoSQL简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/31/SQL-vs-NoSQL/" rel="prev" title="SQL vs NoSQL">
+                SQL vs NoSQL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Shao Tao">
+            
+              <p class="site-author-name" itemprop="name">Shao Tao</p>
+              <p class="site-description motion-element" itemprop="description">Programming and Technical Sharing</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#日志级别"><span class="nav-number">1.</span> <span class="nav-text">日志级别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本参数设置"><span class="nav-number">2.</span> <span class="nav-text">基本参数设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#日志格式"><span class="nav-number">2.1.</span> <span class="nav-text">日志格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志模块内部组成"><span class="nav-number">3.</span> <span class="nav-text">日志模块内部组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Logger"><span class="nav-number">3.1.</span> <span class="nav-text">Logger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handlers"><span class="nav-number">3.2.</span> <span class="nav-text">Handlers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filters"><span class="nav-number">3.3.</span> <span class="nav-text">Filters</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Formatter"><span class="nav-number">3.4.</span> <span class="nav-text">Formatter</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置示例"><span class="nav-number">4.</span> <span class="nav-text">配置示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如果只有一种handler，可以直接通过logging-basicConfig配置"><span class="nav-number">4.1.</span> <span class="nav-text">如果只有一种handler，可以直接通过logging.basicConfig配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如果需要多种handler，可以通过addHandler逐个添加"><span class="nav-number">4.2.</span> <span class="nav-text">如果需要多种handler，可以通过addHandler逐个添加</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Tao</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

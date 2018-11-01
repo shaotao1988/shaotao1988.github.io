@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="数据库事务的目的 为数据库操作序列提供从失败中恢复到正常状态的方法 当多个应用并发访问数据库时，提供隔离机制防止多个应用之间的操作相互干扰">
+<meta name="keywords" content="事务,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库事务">
+<meta property="og:url" content="https://shaotao1988.github.io/2018/09/09/数据库事务/index.html">
+<meta property="og:site_name" content="Tao&#39;s Blog">
+<meta property="og:description" content="数据库事务的目的 为数据库操作序列提供从失败中恢复到正常状态的方法 当多个应用并发访问数据库时，提供隔离机制防止多个应用之间的操作相互干扰">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-01T05:02:29.327Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据库事务">
+<meta name="twitter:description" content="数据库事务的目的 为数据库操作序列提供从失败中恢复到正常状态的方法 当多个应用并发访问数据库时，提供隔离机制防止多个应用之间的操作相互干扰">
+
+
+
+
+
+
+  <link rel="canonical" href="https://shaotao1988.github.io/2018/09/09/数据库事务/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>数据库事务 | Tao's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/数据库事务/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Tao">
+      <meta itemprop="description" content="Programming and Technical Sharing">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数据库事务
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-01 00:02:29" itemprop="dateModified" datetime="2018-11-01T00:02:29-05:00">2018-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="数据库事务的目的"><a href="#数据库事务的目的" class="headerlink" title="数据库事务的目的"></a>数据库事务的目的</h2><ol>
+<li>为数据库操作序列提供从失败中恢复到正常状态的方法</li>
+<li>当多个应用并发访问数据库时，提供隔离机制防止多个应用之间的操作相互干扰  </li>
+</ol>
+<a id="more"></a>
+<h2 id="数据库事务的ACID特性"><a href="#数据库事务的ACID特性" class="headerlink" title="数据库事务的ACID特性"></a>数据库事务的ACID特性</h2><ol>
+<li>Atomicity 原子性：事务作为一个整体，要么全被执行，要么全不执行</li>
+<li>Consistency 一致性：数据库的状态必须从一个状态转换为另一个一致的状态。一致状态的含义是数据库中的数据满足完整性约束。</li>
+<li>Isolated 隔离性： 多个事务并发执行时，相互之间互不干扰</li>
+<li>Durablity 持久性： 已提交的事务对数据库的更改应永久保存在数据库中</li>
+</ol>
+<h2 id="事务隔离性的4个级别"><a href="#事务隔离性的4个级别" class="headerlink" title="事务隔离性的4个级别"></a>事务隔离性的4个级别</h2><ol>
+<li>Read uncommitted 未授权读，该级别允许读取未提交的数据（脏读）。<br> eg：如果一个事务A修改了一条记录，但并未提交，此时事务B读取记录r，如果事务A因某种原因回滚了，那么事务B就读取了一条无效的记录。</li>
+<li>Read committed 授权读，也叫只读已提交数据，不允许脏读。<br> eg：如果事务A读取一条记录r1，并修改为r2，事务A尚未提交时，事务B读取该记录，读取到的是原来的r1，只有当事务A提交以后，B读取到的才是r2.即不会读中间数据，只读已提交数据。<br> 授权读是不可重复读的，比如事务B在事务A提交前和提交后分别读取记录r，读取到的是2个不同的结果r1和r2.</li>
+<li>Repeatable read 可重复读，在一个事务中多次读取同一条记录时，读取结果相同。当事务A读取记录时，需要对该记录加锁，不允许其他事务修改该条记录。但是还是无法解决幻读的问题，即事务A读取与搜索条件项匹配的若干行，A提交之前，事务B以插入或删除行等方式修改事务A的结果集，然后再提交。当事务A重复读取时，却发现数据发生了变化，造成幻读。</li>
+<li>Serializable 序列化，最高的事务隔离级别，在该级别下，事务只能顺序执行。</li>
+</ol>
+<h2 id="悲观锁与乐观锁"><a href="#悲观锁与乐观锁" class="headerlink" title="悲观锁与乐观锁"></a>悲观锁与乐观锁</h2><p>悲观锁和乐观锁是并发控制采取的主要技术手段，是一种思想，在各种并发控制系统中广泛使用。<br>在DBMS系统中，它们和数据库提供的锁机制（行锁、表锁、排他锁、共享锁）是不同的概念，事实上悲观锁正是利用数据库本身提供的锁机制实现的。  </p>
+<h3 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h3><p>悲观锁，指的是对数据被外界（包括本系统其它事务，以及其它系统的事务）修改持悲观态度，即数据被并发修改的概率很大，主要用于数据争用激烈，或者事务回滚成本比加锁保护成本高的场景。<br>悲观锁的流程如下：</p>
+<ol>
+<li>操作任意记录前，先尝试为记录加上排他锁</li>
+<li>如果加锁失败，说明该记录正在被其他事务操作，那么当前事务需要等待或抛出异常</li>
+<li>如果加锁成功，则对记录做操作，事务完成后解锁。如果期间有其它事务对该记录做操作，加锁时都会失败。</li>
+</ol>
+<p>缺点：加锁会产生额外开销，并增加死锁的机会；另外只读型事务不会产生冲突，没必要加锁。</p>
+<h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><p>乐观锁相对悲观锁而言，认为数据一般情况下不会有冲突，所以只在数据进行提交更新的时候，才会正式对数据的冲突与否进行检查，如果发现冲突，再进行回滚。  </p>
+<p>相对悲观锁，乐观锁在实现时不会使用数据库的锁机制，一般实现乐观锁的方式是记录数据版本号或打时间戳。  </p>
+<blockquote>
+<p>数据版本：为数据增加的一个版本标识。当读取数据时，将版本标识一起读出，数据每更新一次，同时对版本标识进行更新。当提交更新时，判断数据库表对应记录的当前版本与第一次读取出来的版本标识是否一致，如果一致则予以更新，不一致则认为是过期数据。  </p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/事务/" rel="tag"># 事务</a>
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/09/数据库系统体系结构/" rel="next" title="关系数据库结构">
+                <i class="fa fa-chevron-left"></i> 关系数据库结构
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/09/regex/" rel="prev" title="正则表达式常用符号">
+                正则表达式常用符号 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Shao Tao">
+            
+              <p class="site-author-name" itemprop="name">Shao Tao</p>
+              <p class="site-description motion-element" itemprop="description">Programming and Technical Sharing</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库事务的目的"><span class="nav-number">1.</span> <span class="nav-text">数据库事务的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库事务的ACID特性"><span class="nav-number">2.</span> <span class="nav-text">数据库事务的ACID特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务隔离性的4个级别"><span class="nav-number">3.</span> <span class="nav-text">事务隔离性的4个级别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#悲观锁与乐观锁"><span class="nav-number">4.</span> <span class="nav-text">悲观锁与乐观锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#悲观锁"><span class="nav-number">4.1.</span> <span class="nav-text">悲观锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#乐观锁"><span class="nav-number">4.2.</span> <span class="nav-text">乐观锁</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Tao</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
