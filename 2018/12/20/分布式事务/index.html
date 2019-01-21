@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="分布式事务">
+<meta name="keywords" content="distributed">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务">
+<meta property="og:url" content="https://shaotao1988.github.io/2018/12/20/分布式事务/index.html">
+<meta property="og:site_name" content="Tao&#39;s Blog">
+<meta property="og:description" content="分布式事务">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://shaotao1988.github.io/2018/12/20/分布式事务/2PC_vote.jpg">
+<meta property="og:image" content="https://shaotao1988.github.io/2018/12/20/分布式事务/2PC_commit.jpg">
+<meta property="og:updated_time" content="2019-01-20T05:00:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式事务">
+<meta name="twitter:description" content="分布式事务">
+<meta name="twitter:image" content="https://shaotao1988.github.io/2018/12/20/分布式事务/2PC_vote.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="https://shaotao1988.github.io/2018/12/20/分布式事务/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>分布式事务 | Tao's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/12/20/分布式事务/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Tao">
+      <meta itemprop="description" content="Programming and Technical Sharing">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分布式事务
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-20 00:00:00" itemprop="dateCreated datePublished" datetime="2018-12-20T00:00:00-05:00">2018-12-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-01-20 00:00:00" itemprop="dateModified" datetime="2019-01-20T00:00:00-05:00">2019-01-20</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">分布式事务</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>传统的数据库只能保证单个数据库数据修改的事务性，而在分布式系统中，为保证数据高可用和系统吞吐量，数据通常被分片和复制，存储在不同的物理机器上的不同数据库中，如何同步修改位于不同物理机器上的数据，是一个严峻的挑战。</p>
+<p>解决分布式一致性问题比较著名的协议有2阶段提交(2PC, 2 Phase Commit)，3阶段提交(3PC，3 Phase Commit)和Paxo协议。</p>
+<a id="more"></a>
+<h1 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h1><p>2阶段提交和3阶段提交都引入了事务协调者(XA Manager)的角色，对参与分布式事务的节点(XA Resource)的提交过程进行管理，保证事务的原子性(所有节点要么全做，要么全不做)。</p>
+<ol>
+<li><p>第一阶段：提交请求(vote)</p>
+<p><img src="2PC_vote.jpg" alt="2PC vote"></p>
+<p>XA Manager向所有的XA Resource发起提交请求，XA Resource收到请求后获取相关资源，<strong>执行事务操作</strong>，并根据处理结果进行投票，向XA Manager发送OK或Abort应答。</p>
+</li>
+<li><p>第二阶段：提交</p>
+<p><img src="2PC_commit.jpg" alt="2PC commit"></p>
+<p>XA Manager收到所有XA Resource的应答后，进行第二阶段的操作。如果所有XA Resource都返回OK，则向所有XA Resource发送提交命令，否则发送回滚命令。XA Resource收到提交或回滚命令后完成提交或回滚并释放整个事务期间占用的资源。XA Manager收到所有XA Resource的提交完成或回滚完成的应答后，结束或取消事务。</p>
+</li>
+</ol>
+<p>2阶段提交的回滚是通过记录undo/redo日志来实现的。</p>
+<p>2阶段提交看起来确实能提供原子性操作，但是仍有一些缺点：</p>
+<ul>
+<li>阻塞<br>2阶段提交是阻塞式协议，XA Resource在第一阶段应答完成后，将一直处于阻塞状态，直到收到第二阶段的提交或回滚命令，该状态下一直占用锁资源，也会导致其他需要获取这个锁的进程处于阻塞状态。</li>
+<li>数据不一致<br>在第二阶段执行提交的过程中，如果XA Manager发送提交命令后宕机或者网络故障，导致只有一部分XA Resource接收到提交命令，那么就会有一部分XA Resource无法执行提交，整个分布式系统就出现了数据不一致的现象。<br>另外，如果XA Manager发送提交命令后宕机，并且唯一接收到提交命令的XA Resource也宕机，那么即使通过选举产生了新的协调者，这条事务的状态也是不确定的：新的协调者无法确定已经宕机XA Resource是否已经完成提交，如果新的协调者发起提交，但是宕机的XA Resource并没有提交，数据就不一致了，或者如果新的协调者发起回滚，但是宕机的XA Resource已经提交成功了，数据也会不一致。</li>
+<li>单点故障<br>由于XA Manager在整个协议的运行中发挥不可替代的作用，一旦其发生网络故障或宕机，会导致整个协议处于挂死状态，可以通过定时器，或重新选举新的manager来接管协议状态，但是仍然可能存在第二点中数据不一致的问题</li>
+</ul>
+<h1 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h1><p>在2阶段提交协议中，所有XA Resource节点收到第二阶段的提交命令后，直接提交，而不管其他节点是否能提交成功。这样做的问题就是，如果唯一一个收到提交命令的Resource节点和Manager节点同时宕机，那么无法判断这个事务是否提交成功：如果宕机的节点已经提交成功，那么协议简单的让所有其他节点回滚，数据就不一致了；反之如果协议简单地让其他节点都成功提交，若宕机的节点并未提交成功，数据也会不一致，因此协议就陷入了两难的境地。</p>
+<p>3PC在一定程度上规避了这个问题，引入超时机制，以及在第二阶段发送提交命令前再加一个阶段：准备提交(prepare to commit)。当manager收到第一阶段的投票结果并确认结果为提交时，向所有节点发送准备提交命令。节点收到准备提交命令后，进入中间状态，在该状态下能够随时进行提交（该阶段不能做无法undo的事情），然后向manager发送成功响应。</p>
+<p>添加这个步骤的作用是，所有参与事务的节点进行提交前最后的沟通，当这个步骤成功完成以后，无论哪个非manager节点宕机，都不影响协议的恢复。</p>
+<p>当Manager节点宕机后，协议将进入恢复模式。在该模式下会产生新的Manager节点，并向任意其它在线的Resource节点查询当前状态。如果已经处于prepare to commit完成状态，那么manager就可以安全的执行第三步提交指令了（如果节点处于prepare to commit状态后一直未收到第三步的指令，超时后默认提交）；如果Resource节点还没到prepare to commit状态，manager则可以确定这个事务还没有提交，可以安全的进行回滚或重试。</p>
+<p>在某些特定场景下，三阶段提交协议仍然不能保证数据的一致性。比如在网络分区场景下，所有分区一中的节点都收到prepare to commit指令，而分区二中的所有节点都没有收到第二阶段的准备提交指令，当这2个网络分区各自进入恢复模式后，协议在2个分区的运行结果分别是提交和回滚，网络恢复后数据又处于不一致的状态。</p>
+<p>三阶段提交协议的优点在于，任何节点宕机后协议都不会被block。</p>
+<h1 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h1><p>3PC的容错机制是为fail-stop模型设计的：机器宕机后永远无法恢复。而很多时候，错误大部分是fail-recover模型：因为网络拥塞、或者CPU占用高，导致Manager节点一段时间无法响应，进而导致协议超时。如果所有节点都像Manager节点发送了prepare to commit成功的应答，并在收到提交命令前Manager发生网络故障，协议超时后重新选举了新的Manger，查询其他节点状态得知均处于提交准备完成状态，于是向所有节点发起提交。同时，原来的Manager从网络故障、或CPU忙中恢复，由于协议超时且只收到部分节点的prepare to commit的确认应答，会向所有节点发送回滚命令。如果这2个时间点刚好处于同一时刻，那么哪个消息先到达节点是不确定的，可能导致有些节点提交而另一些节点回滚，协议的运行结果又一次处于不确定的状态。</p>
+<h2 id="Paxos协议的三种角色"><a href="#Paxos协议的三种角色" class="headerlink" title="Paxos协议的三种角色"></a>Paxos协议的三种角色</h2><ul>
+<li><p>Proposer</p>
+<p>  协议的发起者，只有被Proposer提交过的提议才能被最终选中，没有提议提出，协议就不会有结果</p>
+</li>
+<li><p>Acceptor</p>
+<p>  所有对Proposer提议的值具有投票权的节点。Acceptor要么拒绝提议，要么同意提议，并返回一个承诺。承诺的内容和作用后面详述。</p>
+</li>
+<li><p>Listener</p>
+<p>  只要大多数Acceptor就相同的提议达成一致，那么Paxos协议就可以终止并返回提议值，该提议值会传播到所有对提议感兴趣的节点，这些节点就叫Listener。</p>
+</li>
+</ul>
+<h2 id="Paxos协议流程"><a href="#Paxos协议流程" class="headerlink" title="Paxos协议流程"></a>Paxos协议流程</h2><p>就框架而言，Paxos和2PC非常像。Proposer向Acceptors发送’prepare’请求，当Acceptors接受该请求并发送响应后，Proposer向Acceptors发送提交请求，最后Acceptors向Proposer返回提交的结果。一旦足够数量的Acceptors提交成功并通知了Proposer，协议终止。Paxos的魔法在于Acceptor何时可以接受一个‘prepare’请求，以及Acceptor如何选择正确的提议值。</p>
+<p>相比于2PC，Paxos增加了2项重要机制。第一是对提议进行编号，以区别不同的提议，以及供Acceptors识别提议到达的先后顺序。第二是只要大多数Acceptors接受提议，就可以同意这个提议，所以只要不超过一半的节点失效，Paxos协议仍然可以正常工作。</p>
+<p>提议(Proposal) = 提议的值(Proposal Value) + 提议编号(Proposal Number)，二者缺一不可。</p>
+<p>记{n, v}为提议编号为n，提议值为v的提议，记(m, {n, v})为承诺了Prepare(m)请求，并接受了提议{n, v}。</p>
+<h3 id="提议编号"><a href="#提议编号" class="headerlink" title="提议编号"></a>提议编号</h3><p>Proposer提的每个提议都必须包含全局唯一的提议编号，供Acceptors识别提议到达的先后顺序。当提议到达时，Acceptor首先检查之前已经收到过的提议的最大编号。如果新的提议编号大于这个值，Acceptor通过该提议并返回一个承诺，保证以后不会通过任何提议编号小于它的提议；如果新的提议编号小于这个值，Acceptor将会拒绝该提议，并返回当前接收到的最大提议编号，以提示该Proposer下次发起新提议时必须选择一个更大的值作为提议编号。</p>
+<p>提议编号机制保证了无论提议以何种顺序到达Acceptor，Acceptor都能在不与Proposer进行进一步通讯的情况下，决策通过哪一项提议。这解决了信息异步的问题-不同节点上的提议可能以不同的顺序到达Acceptors。</p>
+<p>随之而来的问题就是，如何保证不同Proposer发起提议的提议编号是全局唯一的？最简单的方法是让所有的Proposer在互不相交的集合中选择提议编号。一个典型的做法是选择(seq.number, address)作为提议编号，其中address是该Proposer的全局唯一IP地址。这个数字对是全局唯一的，并且对每一个Proposer来说，只要选择的seq.number足够大，就有机会胜出。</p>
+<h3 id="大多数"><a href="#大多数" class="headerlink" title="大多数"></a>大多数</h3><p>Pexos协议不要求所有Acceptors都通过提议，只要大多数通过就能获得正确的结果了。一个直观解释是，任何2个大多数集合，必须至少有一个共同的节点。因此如果有2个提议分别被大多数节点所接受，那么这2个大多数节点集合必须至少有一个节点是相同的。</p>
+<p>这意味着，无论协议处于何种状态，都有足够的信息来恢复当前所有提议的信息。换句话说，”大多数”节点可以保证拥有提议的完整信息以确保只有合法的提议被通过。</p>
+<h3 id="合法提议"><a href="#合法提议" class="headerlink" title="合法提议"></a>合法提议</h3><p>一旦Proposer收到来自大多数Acceptors的prepare应答，他就会向所有Acceptors发送提交请求来提交提议值。这很像2PC，除非对Proposer提出的提议有所限制。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/distributed/" rel="tag"># distributed</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/31/SQL-vs-NoSQL/" rel="next" title="SQL vs NoSQL">
+                <i class="fa fa-chevron-left"></i> SQL vs NoSQL
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/20/Singleton/" rel="prev" title="单例模式">
+                单例模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Shao Tao">
+            
+              <p class="site-author-name" itemprop="name">Shao Tao</p>
+              <p class="site-description motion-element" itemprop="description">Programming and Technical Sharing</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2PC"><span class="nav-number">1.</span> <span class="nav-text">2PC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3PC"><span class="nav-number">2.</span> <span class="nav-text">3PC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Paxos"><span class="nav-number">3.</span> <span class="nav-text">Paxos</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos协议的三种角色"><span class="nav-number">3.1.</span> <span class="nav-text">Paxos协议的三种角色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos协议流程"><span class="nav-number">3.2.</span> <span class="nav-text">Paxos协议流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#提议编号"><span class="nav-number">3.2.1.</span> <span class="nav-text">提议编号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大多数"><span class="nav-number">3.2.2.</span> <span class="nav-text">大多数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合法提议"><span class="nav-number">3.2.3.</span> <span class="nav-text">合法提议</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Shao Tao</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -116,7 +116,7 @@
 <meta property="og:site_name" content="Tao&#39;s Blog">
 <meta property="og:description" content="SQL长久以来是存储数据的主要方式，但NoSQL也吸引了越来越多的关注。它们有什么本质的区别？我们该如何选用它们？">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-01T05:04:41.981Z">
+<meta property="og:updated_time" content="2018-11-01T05:07:50.745Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SQL vs NoSQL">
 <meta name="twitter:description" content="SQL长久以来是存储数据的主要方式，但NoSQL也吸引了越来越多的关注。它们有什么本质的区别？我们该如何选用它们？">
@@ -356,7 +356,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:04:41" itemprop="dateModified" datetime="2018-11-01T00:04:41-05:00">2018-11-01</time>
+                <time title="Modified: 2018-11-01 00:07:50" itemprop="dateModified" datetime="2018-11-01T00:07:50-05:00">2018-11-01</time>
               
             
           </span>
@@ -395,7 +395,34 @@
 <p>尽管NoSQL更新并且关注度越来越高，但它并不是SQL的替代品，而是为你提供另一种选择。</p>
 <h2 id="观点二：-NoSQL比SQL好、或者坏"><a href="#观点二：-NoSQL比SQL好、或者坏" class="headerlink" title="观点二： NoSQL比SQL好、或者坏"></a>观点二： NoSQL比SQL好、或者坏</h2><p>有些项目更适合SQL，有些更适合NoSQL，而有些使用两者皆可。</p>
 <h2 id="观点三：-SQL和NoSQL之间有明显的界限"><a href="#观点三：-SQL和NoSQL之间有明显的界限" class="headerlink" title="观点三： SQL和NoSQL之间有明显的界限"></a>观点三： SQL和NoSQL之间有明显的界限</h2><p>这并不一定正确。一些SQL正在吸取NoSQL的特性，反之亦然。它们之间的界限正变得越来越模糊，未来很可能出现一种NewSQL。</p>
-<h1 id="SQL和NoSQL的主要区别"><a href="#SQL和NoSQL的主要区别" class="headerlink" title="SQL和NoSQL的主要区别"></a>SQL和NoSQL的主要区别</h1><h2 id="Tables-vs-Documents"><a href="#Tables-vs-Documents" class="headerlink" title="Tables vs Documents"></a>Tables vs Documents</h2><p>以在线商店储存书本为例，SQL以表格存储，比如：<br>|  ISBN | Title                    |  Author  | Format  | Price |<br>|——-|————————–|———-|———|——-|<br>|9567001|Introduction to Javascript| David    | pdf     | 26.00 |<br>|9567002|Python Cookbook           | Luis     | pdf     | 28.00 |</p>
+<h1 id="SQL和NoSQL的主要区别"><a href="#SQL和NoSQL的主要区别" class="headerlink" title="SQL和NoSQL的主要区别"></a>SQL和NoSQL的主要区别</h1><h2 id="Tables-vs-Documents"><a href="#Tables-vs-Documents" class="headerlink" title="Tables vs Documents"></a>Tables vs Documents</h2><p>以在线商店储存书本为例，SQL以表格存储，比如：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">ISBN</th>
+<th>Title</th>
+<th>Author</th>
+<th>Format</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">9567001</td>
+<td>Introduction to Javascript</td>
+<td>David</td>
+<td>pdf</td>
+<td>26.00</td>
+</tr>
+<tr>
+<td style="text-align:center">9567002</td>
+<td>Python Cookbook</td>
+<td>Luis</td>
+<td>pdf</td>
+<td>28.00</td>
+</tr>
+</tbody>
+</table>
 <p>每一行都是不同书本的记录，无法使用这个表来存储不是书本的信息，并且每一列都有严格的数据类型。</p>
 <p>NoSQL存储的是类似JSON的键值对，比如：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    ISBN: 9567001,</span><br><span class="line">    Title: "Introduction to Javascript",</span><br><span class="line">    Author: "David",</span><br><span class="line">    Format: "pdf",</span><br><span class="line">    Price: 26.00</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>你可以以任意类型存储任意数据到NoSQL数据库中。相比较而言，SQL表格定义了严格的数据模板，所以不容易犯错。而NoSQL更灵活，但是存储任意类型的数据容易导致解析时出错。</p>
@@ -457,8 +484,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/09/python-logging-module/" rel="next" title="python日志模块">
-                <i class="fa fa-chevron-left"></i> python日志模块
+              <a href="/2018/09/09/cookies/" rel="next" title="cookie introduction">
+                <i class="fa fa-chevron-left"></i> cookie introduction
               </a>
             
           </div>
@@ -466,6 +493,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/20/分布式事务/" rel="prev" title="分布式事务">
+                分布式事务 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -537,7 +568,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-count">22</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -580,7 +611,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">14</span>
+                      
+                    
+                    <span class="site-state-item-count">15</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -636,7 +669,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
