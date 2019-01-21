@@ -296,7 +296,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Reduce-memory-usage/">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Dogpile-effect/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Shao Tao">
@@ -315,8 +315,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/09/Reduce-memory-usage/" itemprop="url">
-                  Redis减少内存占用
+                <a class="post-title-link" href="/2018/09/09/Dogpile-effect/" itemprop="url">
+                  dogpile effect
                 </a>
               
             
@@ -359,7 +359,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:02:20" itemprop="dateModified" datetime="2018-11-01T00:02:20-05:00">2018-11-01</time>
+                <time title="Modified: 2018-11-01 00:01:21" itemprop="dateModified" datetime="2018-11-01T00:01:21-05:00">2018-11-01</time>
               
             
           </span>
@@ -393,10 +393,10 @@
 
       
         
-          <p>减少Redis内存用量的几种方法</p>
+          <h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>What if a cache expires and then you got hundreds of requrests at the same time? It can’t be served from cache any more, so your database are hit with numerous processes trying to re-generate the value. And the more requests database receive, the slower and less responsive they get. Until eventually they likely go down.</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/09/09/Reduce-memory-usage/#more" rel="contents">
+            <a class="btn" href="/2018/09/09/Dogpile-effect/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -452,7 +452,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/查询性能优化/">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Redis-Scaling/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Shao Tao">
@@ -471,8 +471,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/09/查询性能优化/" itemprop="url">
-                  数据库查询性能优化
+                <a class="post-title-link" href="/2018/09/09/Redis-Scaling/" itemprop="url">
+                  Redis水平扩展
                 </a>
               
             
@@ -515,7 +515,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:02:42" itemprop="dateModified" datetime="2018-11-01T00:02:42-05:00">2018-11-01</time>
+                <time title="Modified: 2018-11-01 00:02:08" itemprop="dateModified" datetime="2018-11-01T00:02:08-05:00">2018-11-01</time>
               
             
           </span>
@@ -549,10 +549,10 @@
 
       
         
-          <p>数据库查询性能优化</p>
+          <p>对Redis进行扩展</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/09/09/查询性能优化/#more" rel="contents">
+            <a class="btn" href="/2018/09/09/Redis-Scaling/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -608,7 +608,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/数据库索引/">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Introduction-to-NoSQL/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Shao Tao">
@@ -627,8 +627,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/09/数据库索引/" itemprop="url">
-                  数据库索引
+                <a class="post-title-link" href="/2018/09/09/Introduction-to-NoSQL/" itemprop="url">
+                  NoSQL简介
                 </a>
               
             
@@ -671,7 +671,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:02:38" itemprop="dateModified" datetime="2018-11-01T00:02:38-05:00">2018-11-01</time>
+                <time title="Modified: 2018-11-01 00:01:33" itemprop="dateModified" datetime="2018-11-01T00:01:33-05:00">2018-11-01</time>
               
             
           </span>
@@ -705,177 +705,173 @@
 
       
         
-          <ul>
-<li>减少服务器需要扫描的数据量</li>
-<li>避免排序和临时表</li>
-<li>将随机I/O变为顺序I/O</li>
+          <p>NoSQL 简介</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/09/Introduction-to-NoSQL/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/cookies/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Tao">
+      <meta itemprop="description" content="Programming and Technical Sharing">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/09/cookies/" itemprop="url">
+                  cookie introduction
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-01 00:01:08" itemprop="dateModified" datetime="2018-11-01T00:01:08-05:00">2018-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>Signed cookies  </li>
 </ul>
-<blockquote>
-<p><strong>三星索引</strong><br>索引将相关的记录放到一起获得一星<br>索引中的数据顺序和查找中的排列顺序一致获得二星<br>索引中的列包含了查找中的全部列获得三星  </p>
-</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/09/数据库索引/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/数据库系统体系结构/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Shao Tao">
-      <meta itemprop="description" content="Programming and Technical Sharing">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Tao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/09/数据库系统体系结构/" itemprop="url">
-                  关系数据库结构
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2018-11-01 00:02:33" itemprop="dateModified" datetime="2018-11-01T00:02:33-05:00">2018-11-01</time>
-              
-            
-          </span>
+<p>Typically store the user’s name, user ID, the time they last logged in,  and whatever else useful.<br>The cookie also includes a signature that allows the server to verify the information that the browser sent hasn’t been altered.<br>Pros: Everything needed to verify the cookie is in the cookie, additional information can be included and signed easily.<br>Cons: Correctly handling signatures is hard, and it’s easy to forget to sign or verify data.  </p>
+<ul>
+<li>Token cookies  </li>
+</ul>
+<p>Uses a series of random bytes as the data in the cookie.<br>On the server, the token is used as a key to look up the user who owns that token by querying a database.<br>Over time, old tokens can be deleted to make room for new tokens.<br>Pros: Adding information is easy, mobile and slow clients can send requests faster becasuse of small cookies<br>Cons: More information to store on server. Query a relation dabase could be expensive</p>
 
           
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>关系数据库的结构</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/09/数据库系统体系结构/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1146,7 +1142,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:00:47" itemprop="dateModified" datetime="2018-11-01T00:00:47-05:00">2018-11-01</time>
+                <time title="Modified: 2019-01-20 23:02:15" itemprop="dateModified" datetime="2019-01-20T23:02:15-05:00">2019-01-20</time>
               
             
           </span>
@@ -1180,8 +1176,7 @@
 
       
         
-          
-            <h1 id="Regex"><a href="#Regex" class="headerlink" title="Regex"></a>Regex</h1><h2 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h2><table>
+          <h1 id="Regex"><a href="#Regex" class="headerlink" title="Regex"></a>Regex</h1><h2 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h2><table>
 <thead>
 <tr>
 <th style="text-align:center">符号</th>
@@ -1239,49 +1234,13 @@
 </tr>
 </tbody>
 </table>
-<h2 id="字符转义"><a href="#字符转义" class="headerlink" title="字符转义"></a>字符转义</h2><p>当要匹配元字符中定义的符号时，需要用反斜杠转义，比如\$匹配\$号</p>
-<h2 id="重复"><a href="#重复" class="headerlink" title="重复"></a>重复</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">符号</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">*</td>
-<td>重复0次或多次</td>
-</tr>
-<tr>
-<td style="text-align:center">+</td>
-<td>重复一次或多次</td>
-</tr>
-<tr>
-<td style="text-align:center">?</td>
-<td>重复0次或1次</td>
-</tr>
-<tr>
-<td style="text-align:center">{n}</td>
-<td>重复n次</td>
-</tr>
-<tr>
-<td style="text-align:center">{n,}</td>
-<td>重复n次或多次</td>
-</tr>
-<tr>
-<td style="text-align:center">{n,m}</td>
-<td>重复n到m次</td>
-</tr>
-</tbody>
-</table>
-<h2 id="匹配指定范围的字符"><a href="#匹配指定范围的字符" class="headerlink" title="匹配指定范围的字符"></a>匹配指定范围的字符</h2><p>用中括号[]来指定匹配的字符范围，比如：<br>[a-z0-9A-Z]匹配字母或数字<br>[aeiou]匹配列出的元音字母  </p>
-<h2 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h2><ul>
-<li>分组用小括号表示，小括号中的表达式匹配到的文本，就是分组捕获到的内容，可在表达式或其它程序中做进一步处理  </li>
-<li>每个分组自动拥有一个组号，从1开始编号(分组0为整个表达式)，如\1表示第一个分组，可以用于在后续表达式中重复搜索前面的分组匹配到的文本,比如表达式”\b(\w+)\b\s+\1\b”可以用于匹配重复的单词，其中”\b(\w+)\b”用于匹配一个单词，该单词位于分组1，”\s+”匹配一个或多个空白符，”\1”用于重复匹配前面匹配到的单词</li>
-<li>也可以自己指定表达式的<strong>组名</strong>，用法为: (?&lt;group_name&gt;\w+)，尖括号也可以换成单引号。要引用这个分组捕获的内容，可以用\k&lt;group_name&gt;  </li>
-</ul>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/09/regex/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1333,7 +1292,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Introduction-to-NoSQL/">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/数据库系统体系结构/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Shao Tao">
@@ -1352,8 +1311,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/09/Introduction-to-NoSQL/" itemprop="url">
-                  NoSQL简介
+                <a class="post-title-link" href="/2018/09/09/数据库系统体系结构/" itemprop="url">
+                  关系数据库结构
                 </a>
               
             
@@ -1396,7 +1355,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:01:33" itemprop="dateModified" datetime="2018-11-01T00:01:33-05:00">2018-11-01</time>
+                <time title="Modified: 2018-11-01 00:02:33" itemprop="dateModified" datetime="2018-11-01T00:02:33-05:00">2018-11-01</time>
               
             
           </span>
@@ -1430,10 +1389,10 @@
 
       
         
-          <p>NoSQL 简介</p>
+          <p>关系数据库的结构</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/09/09/Introduction-to-NoSQL/#more" rel="contents">
+            <a class="btn" href="/2018/09/09/数据库系统体系结构/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -1648,7 +1607,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Dogpile-effect/">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/数据库索引/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Shao Tao">
@@ -1667,8 +1626,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/09/Dogpile-effect/" itemprop="url">
-                  dogpile effect
+                <a class="post-title-link" href="/2018/09/09/数据库索引/" itemprop="url">
+                  数据库索引
                 </a>
               
             
@@ -1711,7 +1670,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:01:21" itemprop="dateModified" datetime="2018-11-01T00:01:21-05:00">2018-11-01</time>
+                <time title="Modified: 2018-11-01 00:02:38" itemprop="dateModified" datetime="2018-11-01T00:02:38-05:00">2018-11-01</time>
               
             
           </span>
@@ -1745,10 +1704,17 @@
 
       
         
-          <h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>What if a cache expires and then you got hundreds of requrests at the same time? It can’t be served from cache any more, so your database are hit with numerous processes trying to re-generate the value. And the more requests database receive, the slower and less responsive they get. Until eventually they likely go down.</p>
+          <ul>
+<li>减少服务器需要扫描的数据量</li>
+<li>避免排序和临时表</li>
+<li>将随机I/O变为顺序I/O</li>
+</ul>
+<blockquote>
+<p><strong>三星索引</strong><br>索引将相关的记录放到一起获得一星<br>索引中的数据顺序和查找中的排列顺序一致获得二星<br>索引中的列包含了查找中的全部列获得三星  </p>
+</blockquote>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/09/09/Dogpile-effect/#more" rel="contents">
+            <a class="btn" href="/2018/09/09/数据库索引/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>

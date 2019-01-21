@@ -377,10 +377,19 @@
 
       
         
-          单例模式
+          <p>单例模式是一种创建模式，它提供一种创建全局唯一对象的方法，广泛应用在日志、数据库或其他可能存在资源访问冲突的场景。</p>
+<p>单例模式的特点为：</p>
+<ul>
+<li><p>保证一个类最多只有一个对象被创建出来</p>
+</li>
+<li><p>提供对象的全局访问接口</p>
+</li>
+<li><p>一般用于共享资源的并发访问</p>
+</li>
+</ul>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/01/20/Singleton/">
+            <a class="btn" href="/2019/01/20/Singleton/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -533,10 +542,11 @@
 
       
         
-          分布式事务
+          <p>传统的数据库只能保证单个数据库数据修改的事务性，而在分布式系统中，为保证数据高可用和系统吞吐量，数据通常被分片和复制，存储在不同的物理机器上的不同数据库中，如何同步修改位于不同物理机器上的数据，是一个严峻的挑战。</p>
+<p>解决分布式一致性问题比较著名的协议有2阶段提交(2PC, 2 Phase Commit)，3阶段提交(3PC，3 Phase Commit)和Paxo协议。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/12/20/分布式事务/">
+            <a class="btn" href="/2018/12/20/分布式事务/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -748,165 +758,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/cookies/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Shao Tao">
-      <meta itemprop="description" content="Programming and Technical Sharing">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Tao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/09/cookies/" itemprop="url">
-                  cookie introduction
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2018-11-01 00:01:08" itemprop="dateModified" datetime="2018-11-01T00:01:08-05:00">2018-11-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>Signed cookies  </li>
-</ul>
-<p>Typically store the user’s name, user ID, the time they last logged in,  and whatever else useful.<br>The cookie also includes a signature that allows the server to verify the information that the browser sent hasn’t been altered.<br>Pros: Everything needed to verify the cookie is in the cookie, additional information can be included and signed easily.<br>Cons: Correctly handling signatures is hard, and it’s easy to forget to sign or verify data.  </p>
-<ul>
-<li>Token cookies  </li>
-</ul>
-<p>Uses a series of random bytes as the data in the cookie.<br>On the server, the token is used as a key to look up the user who owns that token by querying a database.<br>Over time, old tokens can be deleted to make room for new tokens.<br>Pros: Adding information is easy, mobile and slow clients can send requests faster becasuse of small cookies<br>Cons: More information to store on server. Query a relation dabase could be expensive</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Redis-Best-Practice/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1063,7 +914,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Redis-Scaling/">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/查询性能优化/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Shao Tao">
@@ -1082,8 +933,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/09/Redis-Scaling/" itemprop="url">
-                  Redis水平扩展
+                <a class="post-title-link" href="/2018/09/09/查询性能优化/" itemprop="url">
+                  数据库查询性能优化
                 </a>
               
             
@@ -1126,7 +977,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:02:08" itemprop="dateModified" datetime="2018-11-01T00:02:08-05:00">2018-11-01</time>
+                <time title="Modified: 2018-11-01 00:02:42" itemprop="dateModified" datetime="2018-11-01T00:02:42-05:00">2018-11-01</time>
               
             
           </span>
@@ -1160,10 +1011,10 @@
 
       
         
-          <p>对Redis进行扩展</p>
+          <p>数据库查询性能优化</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/09/09/Redis-Scaling/#more" rel="contents">
+            <a class="btn" href="/2018/09/09/查询性能优化/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -1442,7 +1293,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-01 00:01:47" itemprop="dateModified" datetime="2018-11-01T00:01:47-05:00">2018-11-01</time>
+                <time title="Modified: 2019-01-20 22:56:54" itemprop="dateModified" datetime="2019-01-20T22:56:54-05:00">2019-01-20</time>
               
             
           </span>
@@ -1793,6 +1644,162 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/09/09/Redis-replication/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shaotao1988.github.io/2018/09/09/Reduce-memory-usage/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Shao Tao">
+      <meta itemprop="description" content="Programming and Technical Sharing">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/09/Reduce-memory-usage/" itemprop="url">
+                  Redis减少内存占用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-09T00:00:00-05:00">2018-09-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-01 00:02:20" itemprop="dateModified" datetime="2018-11-01T00:02:20-05:00">2018-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>减少Redis内存用量的几种方法</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/09/Reduce-memory-usage/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
